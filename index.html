@@ -1,12 +1,29 @@
-<div class="container glass">
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SkillSphere</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
-  <h2>SkillSphere Exam Portal</h2>
+<div class="center">
 
-  <input id="name" placeholder="Full Name">
-  <input id="email" placeholder="Email">
-  <input id="enrollment" placeholder="Enrollment ID">
+  <div class="card glass">
 
-  <button onclick="start()">Start Exam</button>
+    <div class="brand">
+      <h1>SkillSphere</h1>
+      <p>Assessment Portal</p>
+    </div>
+
+    <input id="name" placeholder="Full Name">
+    <input id="email" placeholder="Email Address">
+    <input id="enrollment" placeholder="Enrollment ID">
+
+    <button id="btn" onclick="start()">Start Exam</button>
+
+    <div id="error" class="error"></div>
+
+  </div>
 
 </div>
 
@@ -14,20 +31,40 @@
 const API = "https://skillsphere-exam.skillsphere-work.workers.dev";
 
 async function start() {
-  const res = await fetch(API + "/login", {
-    method: "POST",
-    body: JSON.stringify({
-      name: name.value,
-      email: email.value,
-      enrollment_id: enrollment.value
-    })
-  });
 
-  const data = await res.json();
+  error.innerText = "";
+  btn.innerText = "Starting...";
+  btn.disabled = true;
 
-  if (data.error) return alert(data.error);
+  try {
+    const res = await fetch(API + "/login", {
+      method: "POST",
+      body: JSON.stringify({
+        name: name.value,
+        email: email.value,
+        enrollment_id: enrollment.value
+      })
+    });
 
-  localStorage.setItem("token", data.token);
-  location.href = "quiz.html";
+    const data = await res.json();
+
+    if (data.error) {
+      error.innerText = data.error;
+      btn.innerText = "Start Exam";
+      btn.disabled = false;
+      return;
+    }
+
+    localStorage.setItem("token", data.token);
+    location.href = "quiz.html";
+
+  } catch {
+    error.innerText = "Something went wrong";
+    btn.innerText = "Start Exam";
+    btn.disabled = false;
+  }
 }
 </script>
+
+</body>
+</html>
