@@ -68,12 +68,16 @@ function startTimer(time) {
     let minutes = Math.floor(time / 60);
     let seconds = time % 60;
 
-    timer.innerText = 
+    timer.innerText =
       `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
 
-    time--;
+    if (time <= 0) {
+      clearInterval(timerInterval);
+      autoSubmit("Time Up"); // ✅ FIXED
+      return;
+    }
 
-    if (time < 0) autoSubmit("Time Up");
+    time--;
 
   }, 1000);
 }
@@ -168,7 +172,7 @@ window.addEventListener("beforeunload", () => {
   const token = JSON.parse(atob(localStorage.getItem("token")));
 
   navigator.sendBeacon(API + "/submit", JSON.stringify({
-    candidate_id: token.candidate_id,
+    enrollment_id: token.enrollment_id,
     answers,
     total: questions.length,
     violations
@@ -187,7 +191,7 @@ async function autoSubmit(reason) {
   const res = await fetch(API + "/submit", {
     method: "POST",
     body: JSON.stringify({
-      candidate_id: token.candidate_id,
+      enrollment_id: token.enrollment_id, // ✅ FIXED
       answers: questions.map((q, i) => answers[i] || null),
       total: questions.length,
       violations
