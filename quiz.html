@@ -188,7 +188,7 @@ async function autoSubmit(reason) {
     method: "POST",
     body: JSON.stringify({
       candidate_id: token.candidate_id,
-      answers,
+      answers: questions.map((q, i) => answers[i] || null),
       total: questions.length,
       violations
     })
