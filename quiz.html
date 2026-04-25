@@ -1,24 +1,55 @@
-<h2 id="timer"></h2>
-<div id="quiz"></div>
-<button onclick="manualSubmit()">Submit</button>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SkillSphere Exam</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="main">
+
+  <div class="sidebar glass" id="sidebar"></div>
+
+  <div class="content">
+
+    <!-- PROGRESS + TIMER -->
+    <div>
+      <div class="progress">
+        <div id="progress" class="progress-fill"></div>
+      </div>
+      <div id="timer"></div>
+    </div>
+
+    <!-- QUESTION -->
+    <div class="question-box glass">
+      <div id="question" class="question"></div>
+      <div id="options"></div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="actions">
+      <button onclick="prev()">Prev</button>
+      <button onclick="next()">Next</button>
+      <button onclick="manualSubmit()">Submit</button>
+    </div>
+
+  </div>
+</div>
 
 <script>
 const API = "https://skillsphere-exam.skillsphere-work.workers.dev";
 
 let questions = [];
 let answers = [];
+let current = 0;
 let violations = 0;
 let submitted = false;
 let timerInterval;
 
-// =========================
-// LOAD EXAM
-// =========================
+// LOAD
 async function load() {
   const res = await fetch(API + "/exam", {
-    headers: {
-      Authorization: localStorage.getItem("token")
-    }
+    headers: { Authorization: localStorage.getItem("token") }
   });
 
   const data = await res.json();
@@ -26,49 +57,112 @@ async function load() {
   questions = data.questions;
 
   startTimer(data.exam.duration);
+  renderSidebar();
   render();
 }
 
-// =========================
-// TIMER AUTO SUBMIT
-// =========================
+// TIMER (MM:SS)
 function startTimer(time) {
   timerInterval = setInterval(() => {
-    time--;
-    timer.innerText = "Time: " + time;
 
-    if (time <= 0) {
-      clearInterval(timerInterval);
-      autoSubmit("Time Up");
-    }
+    let minutes = Math.floor(time / 60);
+    let seconds = time % 60;
+
+    timer.innerText = 
+      `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+
+    time--;
+
+    if (time < 0) autoSubmit("Time Up");
+
   }, 1000);
 }
 
-// =========================
+// SIDEBAR
+function renderSidebar() {
+  sidebar.innerHTML = questions.map((q,i) =>
+    `<div class="q-btn" onclick="go(${i})">${i+1}</div>`
+  ).join("");
+}
+
+// RENDER
+function render() {
+  const q = questions[current];
+
+  question.innerText = `${current+1}. ${q.question}`;
+
+  options.innerHTML = ["a","b","c","d"].map(opt => {
+    const selected = answers[current]?.selected === opt ? "selected" : "";
+    return `
+      <div class="option ${selected}" onclick="select('${opt}')">
+        ${q["option_" + opt]}
+      </div>
+    `;
+  }).join("");
+
+  updatePalette();
+  updateProgress();
+}
+
+// SELECT
+function select(opt) {
+  answers[current] = {
+    qid: questions[current].id,
+    selected: opt,
+    correct: questions[current].correct
+  };
+
+  render();
+}
+
+// NAV
+function next() {
+  if (current < questions.length-1) {
+    current++;
+    render();
+  }
+}
+
+function prev() {
+  if (current > 0) {
+    current--;
+    render();
+  }
+}
+
+function go(i) {
+  current = i;
+  render();
+}
+
+// PALETTE COLORS
+function updatePalette() {
+  document.querySelectorAll(".q-btn").forEach((btn,i)=>{
+    btn.classList.remove("active","answered","not-answered");
+
+    if (i === current) btn.classList.add("active");
+    else if (answers[i]) btn.classList.add("answered");
+    else btn.classList.add("not-answered");
+  });
+}
+
+// PROGRESS
+function updateProgress() {
+  let answered = answers.filter(a=>a).length;
+  let percent = (answered / questions.length) * 100;
+  progress.style.width = percent + "%";
+}
+
 // ANTI CHEAT
-// =========================
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
     violations++;
-
-    if (violations >= 3) {
-      autoSubmit("Tab Switch Limit");
-    }
+    if (violations >= 3) autoSubmit("Cheating");
   }
 });
 
-// =========================
-// WARNING ON EXIT
-// =========================
-window.onbeforeunload = () => {
-  return "Exam will be submitted!";
-};
-
-// =========================
-// SEND BEACON (AUTO SUBMIT)
-// =========================
+// SEND BEACON
 window.addEventListener("beforeunload", () => {
-
   if (submitted) return;
 
   const token = JSON.parse(atob(localStorage.getItem("token")));
@@ -81,46 +175,12 @@ window.addEventListener("beforeunload", () => {
   }));
 });
 
-// =========================
-// RENDER QUESTIONS
-// =========================
-function render() {
-  let html = "";
-
-  questions.forEach((q, i) => {
-    html += `<p>${q.question}</p>`;
-
-    ["a","b","c","d"].forEach(opt => {
-      html += `
-        <button onclick="select(${i}, '${opt}')">
-          ${q["option_" + opt]}
-        </button>
-      `;
-    });
-  });
-
-  quiz.innerHTML = html;
-}
-
-function select(i, opt) {
-  answers[i] = {
-    qid: questions[i].id,
-    selected: opt,
-    correct: questions[i].correct
-  };
-}
-
-// =========================
-// CENTRAL AUTO SUBMIT
-// =========================
+// SUBMIT
 async function autoSubmit(reason) {
-
   if (submitted) return;
   submitted = true;
 
   clearInterval(timerInterval);
-
-  console.log("Submitted due to:", reason);
 
   const token = JSON.parse(atob(localStorage.getItem("token")));
 
@@ -137,16 +197,15 @@ async function autoSubmit(reason) {
   const data = await res.json();
 
   localStorage.setItem("result", JSON.stringify(data));
-
   location.href = "result.html";
 }
 
-// =========================
-// MANUAL SUBMIT
-// =========================
 function manualSubmit() {
   autoSubmit("Manual");
 }
 
 load();
 </script>
+
+</body>
+</html>
