@@ -1,0 +1,131 @@
+/* GLOBAL */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #0f172a, #020617);
+  color: white;
+}
+
+/* GLASS */
+.glass {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+/* LAYOUT */
+.main {
+  display: flex;
+  height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 130px;
+  padding: 15px;
+  overflow-y: auto;
+}
+
+/* QUESTION PALETTE */
+.q-btn {
+  width: 45px;
+  height: 45px;
+  margin: 6px;
+  border-radius: 10px;
+  background: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 14px;
+}
+
+/* COLORS */
+.q-btn.active { background: #6366f1; }
+.q-btn.answered { background: #22c55e; }
+.q-btn.not-answered { background: #ef4444; }
+
+/* CONTENT */
+.content {
+  flex: 1;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TOP BAR */
+.progress {
+  height: 8px;
+  background: #1e293b;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #6366f1;
+  width: 0%;
+  transition: 0.3s;
+}
+
+#timer {
+  margin-top: 10px;
+  font-size: 18px;
+  color: #f87171;
+}
+
+/* QUESTION */
+.question-box {
+  padding: 25px;
+  margin-top: 20px;
+}
+
+.question {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+/* OPTIONS */
+.option {
+  padding: 12px;
+  margin: 10px 0;
+  background: #1e293b;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.option:hover { background: #334155; }
+.option.selected { background: #6366f1; }
+
+/* BUTTONS */
+.actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #6366f1;
+  color: white;
+  cursor: pointer;
+}
+
+/* MOBILE */
+@media(max-width:768px) {
+  .main { flex-direction: column; }
+
+  .sidebar {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+  }
+
+  .q-btn { flex: 0 0 auto; }
+}
