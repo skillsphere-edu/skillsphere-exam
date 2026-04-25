@@ -1,9 +1,14 @@
-<h2>SkillSphere Exam</h2>
+<div class="container glass">
 
-<input id="name" placeholder="Name">
-<input id="email" placeholder="Email">
+  <h2>SkillSphere Exam Portal</h2>
 
-<button onclick="start()">Start</button>
+  <input id="name" placeholder="Full Name">
+  <input id="email" placeholder="Email">
+  <input id="enrollment" placeholder="Enrollment ID">
+
+  <button onclick="start()">Start Exam</button>
+
+</div>
 
 <script>
 const API = "https://skillsphere-exam.skillsphere-work.workers.dev";
@@ -13,7 +18,8 @@ async function start() {
     method: "POST",
     body: JSON.stringify({
       name: name.value,
-      email: email.value
+      email: email.value,
+      enrollment_id: enrollment.value
     })
   });
 
