@@ -1,0 +1,152 @@
+<h2 id="timer"></h2>
+<div id="quiz"></div>
+<button onclick="manualSubmit()">Submit</button>
+
+<script>
+const API = "https://skillsphere-exam.skillsphere-work.workers.dev/";
+
+let questions = [];
+let answers = [];
+let violations = 0;
+let submitted = false;
+let timerInterval;
+
+// =========================
+// LOAD EXAM
+// =========================
+async function load() {
+  const res = await fetch(API + "/exam", {
+    headers: {
+      Authorization: localStorage.getItem("token")
+    }
+  });
+
+  const data = await res.json();
+
+  questions = data.questions;
+
+  startTimer(data.exam.duration);
+  render();
+}
+
+// =========================
+// TIMER AUTO SUBMIT
+// =========================
+function startTimer(time) {
+  timerInterval = setInterval(() => {
+    time--;
+    timer.innerText = "Time: " + time;
+
+    if (time <= 0) {
+      clearInterval(timerInterval);
+      autoSubmit("Time Up");
+    }
+  }, 1000);
+}
+
+// =========================
+// ANTI CHEAT
+// =========================
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    violations++;
+
+    if (violations >= 3) {
+      autoSubmit("Tab Switch Limit");
+    }
+  }
+});
+
+// =========================
+// WARNING ON EXIT
+// =========================
+window.onbeforeunload = () => {
+  return "Exam will be submitted!";
+};
+
+// =========================
+// SEND BEACON (AUTO SUBMIT)
+// =========================
+window.addEventListener("beforeunload", () => {
+
+  if (submitted) return;
+
+  const token = JSON.parse(atob(localStorage.getItem("token")));
+
+  navigator.sendBeacon(API + "/submit", JSON.stringify({
+    candidate_id: token.candidate_id,
+    answers,
+    total: questions.length,
+    violations
+  }));
+});
+
+// =========================
+// RENDER QUESTIONS
+// =========================
+function render() {
+  let html = "";
+
+  questions.forEach((q, i) => {
+    html += `<p>${q.question}</p>`;
+
+    ["a","b","c","d"].forEach(opt => {
+      html += `
+        <button onclick="select(${i}, '${opt}')">
+          ${q["option_" + opt]}
+        </button>
+      `;
+    });
+  });
+
+  quiz.innerHTML = html;
+}
+
+function select(i, opt) {
+  answers[i] = {
+    qid: questions[i].id,
+    selected: opt,
+    correct: questions[i].correct
+  };
+}
+
+// =========================
+// CENTRAL AUTO SUBMIT
+// =========================
+async function autoSubmit(reason) {
+
+  if (submitted) return;
+  submitted = true;
+
+  clearInterval(timerInterval);
+
+  console.log("Submitted due to:", reason);
+
+  const token = JSON.parse(atob(localStorage.getItem("token")));
+
+  const res = await fetch(API + "/submit", {
+    method: "POST",
+    body: JSON.stringify({
+      candidate_id: token.candidate_id,
+      answers,
+      total: questions.length,
+      violations
+    })
+  });
+
+  const data = await res.json();
+
+  localStorage.setItem("result", JSON.stringify(data));
+
+  location.href = "result.html";
+}
+
+// =========================
+// MANUAL SUBMIT
+// =========================
+function manualSubmit() {
+  autoSubmit("Manual");
+}
+
+load();
+</script>
