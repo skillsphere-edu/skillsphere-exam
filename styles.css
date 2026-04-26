@@ -118,6 +118,17 @@ button:hover {
 
 .option.selected {
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
+
+  .actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.actions button {
+  flex: 1;
+}
+  
 }
 /* ANIMATION */
 @keyframes fadeIn {
