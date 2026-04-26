@@ -55,7 +55,7 @@ async function load() {
   const data = await res.json();
 
   questions = data.questions;
-
+answers = new Array(questions.length).fill(null);
   startTimer(data.exam.duration);
   renderSidebar();
   render();
@@ -96,7 +96,7 @@ function render() {
   question.innerText = `${current+1}. ${q.question}`;
 
   options.innerHTML = ["a","b","c","d"].map(opt => {
-    const selected = answers[current]?.selected === opt ? "selected" : "";
+    const selected = answers[current] && answers[current].selected === opt ? "selected" : "";
     return `
       <div class="option ${selected}" onclick="select('${opt}')">
         ${q["option_" + opt]}
@@ -144,9 +144,15 @@ function updatePalette() {
   document.querySelectorAll(".q-btn").forEach((btn,i)=>{
     btn.classList.remove("active","answered","not-answered");
 
-    if (i === current) btn.classList.add("active");
-    else if (answers[i]) btn.classList.add("answered");
-    else btn.classList.add("not-answered");
+    if (answers[i] !== null) {
+      btn.classList.add("answered");
+    } else {
+      btn.classList.add("not-answered");
+    }
+
+    if (i === current) {
+      btn.classList.add("active");
+    }
   });
 }
 
