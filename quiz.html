@@ -5,10 +5,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="header">
-  <div id="examTitle" class="exam-title"></div>
-  <div id="timer"></div>
-</div>
+
 <div class="main">
 
   <div class="sidebar glass" id="sidebar"></div>
@@ -20,6 +17,7 @@
       <div class="progress">
         <div id="progress" class="progress-fill"></div>
       </div>
+      <div id="timer"></div>
     </div>
 
     <!-- QUESTION -->
@@ -50,32 +48,19 @@ let timerInterval;
 
 // LOAD
 async function load() {
-  try {
-    const res = await fetch(API + "/exam", {
-      headers: { Authorization: localStorage.getItem("token") }
-    });
-    if (!res.ok) {
-      alert("Server error");
-      return;
-    }
-    const data = await res.json();
-    if (!data.exam) {
-      alert("Failed to load exam");
-      return;
-    }
-    examTitle.innerText = data.exam.title;
-    questions = data.questions;
-    console.log("Questions fetched:", questions.length);
-    answers = new Array(questions.length).fill(null);
-    startTimer(data.exam.duration);
-    renderSidebar();
-    render();
-  } catch (err) {
-    console.error(err);
-    alert("Network error. Please try again.");
-  }
+  const res = await fetch(API + "/exam", {
+    headers: { Authorization: localStorage.getItem("token") }
+  });
+
+  const data = await res.json();
+
+  questions = data.questions;
+
+  startTimer(data.exam.duration);
+  renderSidebar();
+  render();
 }
-  
+
 // TIMER (MM:SS)
 function startTimer(time) {
   timerInterval = setInterval(() => {
@@ -111,10 +96,7 @@ function render() {
   question.innerText = `${current+1}. ${q.question}`;
 
   options.innerHTML = ["a","b","c","d"].map(opt => {
-    const selected =
-  answers[current] && answers[current].selected === opt
-    ? "selected"
-    : "";
+    const selected = answers[current]?.selected === opt ? "selected" : "";
     return `
       <div class="option ${selected}" onclick="select('${opt}')">
         ${q["option_" + opt]}
