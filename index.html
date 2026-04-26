@@ -1,29 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>SkillSphere</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+<div class="container glass">
 
-<div class="center">
+  <h2>SkillSphere Exam Portal</h2>
 
-  <div class="card glass">
+  <input id="name" placeholder="Full Name">
+  <input id="email" placeholder="Email">
+  <input id="enrollment" placeholder="Enrollment ID">
 
-    <div class="brand">
-      <h1>SkillSphere</h1>
-      <p>Assessment Portal</p>
-    </div>
-
-    <input id="name" placeholder="Full Name">
-    <input id="email" placeholder="Email Address">
-    <input id="enrollment" placeholder="Enrollment ID">
-
-    <button id="btn" onclick="start()">Start Exam</button>
-
-    <div id="error" class="error"></div>
-
-  </div>
+  <button onclick="start()">Start Exam</button>
 
 </div>
 
@@ -31,40 +14,20 @@
 const API = "https://skillsphere-exam.skillsphere-work.workers.dev";
 
 async function start() {
+  const res = await fetch(API + "/login", {
+    method: "POST",
+    body: JSON.stringify({
+      name: name.value,
+      email: email.value,
+      enrollment_id: enrollment.value
+    })
+  });
 
-  error.innerText = "";
-  btn.innerText = "Starting...";
-  btn.disabled = true;
+  const data = await res.json();
 
-  try {
-    const res = await fetch(API + "/login", {
-      method: "POST",
-      body: JSON.stringify({
-        name: name.value,
-        email: email.value,
-        enrollment_id: enrollment.value
-      })
-    });
+  if (data.error) return alert(data.error);
 
-    const data = await res.json();
-
-    if (data.error) {
-      error.innerText = data.error;
-      btn.innerText = "Start Exam";
-      btn.disabled = false;
-      return;
-    }
-
-    localStorage.setItem("token", data.token);
-    location.href = "quiz.html";
-
-  } catch {
-    error.innerText = "Something went wrong";
-    btn.innerText = "Start Exam";
-    btn.disabled = false;
-  }
+  localStorage.setItem("token", data.token);
+  location.href = "quiz.html";
 }
 </script>
-
-</body>
-</html>
