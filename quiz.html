@@ -65,6 +65,8 @@ async function load() {
     }
     examTitle.innerText = data.exam.title;
     questions = data.questions;
+    console.log("Questions fetched:", questions.length);
+    answers = new Array(questions.length).fill(null);
     startTimer(data.exam.duration);
     renderSidebar();
     render();
@@ -109,7 +111,10 @@ function render() {
   question.innerText = `${current+1}. ${q.question}`;
 
   options.innerHTML = ["a","b","c","d"].map(opt => {
-    const selected = answers[current]?.selected === opt ? "selected" : "";
+    const selected =
+  answers[current] && answers[current].selected === opt
+    ? "selected"
+    : "";
     return `
       <div class="option ${selected}" onclick="select('${opt}')">
         ${q["option_" + opt]}
