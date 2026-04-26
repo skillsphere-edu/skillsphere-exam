@@ -5,7 +5,10 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
+<div class="header">
+  <div id="examTitle" class="exam-title"></div>
+  <div id="timer"></div>
+</div>
 <div class="main">
 
   <div class="sidebar glass" id="sidebar"></div>
@@ -17,7 +20,6 @@
       <div class="progress">
         <div id="progress" class="progress-fill"></div>
       </div>
-      <div id="timer"></div>
     </div>
 
     <!-- QUESTION -->
@@ -48,19 +50,30 @@ let timerInterval;
 
 // LOAD
 async function load() {
-  const res = await fetch(API + "/exam", {
-    headers: { Authorization: localStorage.getItem("token") }
-  });
-
-  const data = await res.json();
-
-  questions = data.questions;
-
-  startTimer(data.exam.duration);
-  renderSidebar();
-  render();
+  try {
+    const res = await fetch(API + "/exam", {
+      headers: { Authorization: localStorage.getItem("token") }
+    });
+    if (!res.ok) {
+      alert("Server error");
+      return;
+    }
+    const data = await res.json();
+    if (!data.exam) {
+      alert("Failed to load exam");
+      return;
+    }
+    examTitle.innerText = data.exam.title;
+    questions = data.questions;
+    startTimer(data.exam.duration);
+    renderSidebar();
+    render();
+  } catch (err) {
+    console.error(err);
+    alert("Network error. Please try again.");
+  }
 }
-
+  
 // TIMER (MM:SS)
 function startTimer(time) {
   timerInterval = setInterval(() => {
