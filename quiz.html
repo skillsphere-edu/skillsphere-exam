@@ -1185,7 +1185,7 @@ async function load() {
   try {
     animateLoadBar();
 
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("sse_token");
     if (!token) {
       showLoadError("No authentication token found. Please log in and try again.");
       return;
@@ -1457,7 +1457,7 @@ window.addEventListener("beforeunload", () => {
   if (submitted || !questions.length) return;
 
   let tokenPayload = {};
-  try { tokenPayload = JSON.parse(atob(localStorage.getItem("token"))); } catch (e) {}
+  try { tokenPayload = JSON.parse(atob(localStorage.getItem("sse_token"))); } catch (e) {}
 
   const payload = JSON.stringify({
     enrollment_id: tokenPayload.enrollment_id || null,
@@ -1479,7 +1479,7 @@ async function autoSubmit(reason) {
   clearInterval(timerInterval);
 
   let tokenPayload = {};
-  try { tokenPayload = JSON.parse(atob(localStorage.getItem("token"))); } catch (e) {}
+  try { tokenPayload = JSON.parse(atob(localStorage.getItem("sse_token"))); } catch (e) {}
 
   try {
     const res = await fetch(API + "/submit", {
