@@ -82,7 +82,6 @@ body::before {
 @keyframes fadeUp   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 @keyframes fadeIn   { from{opacity:0} to{opacity:1} }
 @keyframes stampIn  { 0%{opacity:0;transform:rotate(-8deg) scale(1.35)} 60%{opacity:1;transform:rotate(-8deg) scale(0.95)} 80%{transform:rotate(-8deg) scale(1.03)} 100%{transform:rotate(-8deg) scale(1)} }
-@keyframes dash     { to { stroke-dashoffset: 0; } }
 @keyframes pulseRed { 0%,100%{box-shadow:0 0 0 0 rgba(192,39,45,0.35)} 50%{box-shadow:0 0 0 12px rgba(192,39,45,0)} }
 @keyframes scanline { from{top:-100%} to{top:200%} }
 @keyframes blink    { 0%,100%{opacity:1} 50%{opacity:0} }
@@ -234,13 +233,11 @@ main {
   background: var(--paper-dark);
   border: 2px solid var(--paper-stain);
   border-top: none;
-  border-radius: 0 0 0 0;
   overflow: hidden;
   box-shadow: 6px 6px 0 var(--paper-stain);
   position: relative;
 }
 
-/* notebook lines */
 .verdict-panel::before {
   content: '';
   position: absolute;
@@ -268,7 +265,6 @@ main {
   flex-wrap: wrap;
 }
 
-/* SVG ring */
 .ring-wrap {
   position: relative;
   flex-shrink: 0;
@@ -330,7 +326,6 @@ main {
   margin-top: 4px;
 }
 
-/* Score details */
 .score-details {
   flex: 1;
   min-width: 200px;
@@ -363,7 +358,6 @@ main {
   margin-bottom: 1rem;
 }
 
-/* Verdict stamp */
 .verdict-stamp {
   display: inline-block;
   font-family: var(--stamp);
@@ -379,8 +373,8 @@ main {
   margin-left: 4px;
 }
 .vs-pass { color: var(--stamp-green); border-color: var(--stamp-green); }
-.vs-high { color: var(--gold); border-color: var(--gold); }
-.vs-fail { color: var(--red-tape); border-color: var(--red-tape); }
+.vs-high { color: var(--gold);        border-color: var(--gold); }
+.vs-fail { color: var(--red-tape);    border-color: var(--red-tape); }
 
 /* ═══════════ STATS ROW ═══════════ */
 .stats-row {
@@ -400,24 +394,17 @@ main {
 .stat-cell:last-child { border-right: none; }
 .stat-cell:hover { background: rgba(255,255,255,0.18); }
 
-/* coloured top accent */
 .stat-cell::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 3px;
-  border-radius: 0;
-  transition: opacity 0.2s;
 }
 .sc-correct::before { background: var(--stamp-green); }
 .sc-wrong::before   { background: var(--red-tape); }
 .sc-skip::before    { background: var(--ink-muted); }
 
-.stat-icon {
-  font-size: 1.6rem;
-  margin-bottom: 0.5rem;
-  display: block;
-}
+.stat-icon  { font-size: 1.6rem; margin-bottom: 0.5rem; display: block; }
 
 .stat-count {
   font-family: var(--display);
@@ -507,7 +494,6 @@ main {
   position: relative;
 }
 
-/* scanline shimmer on fill */
 .bar-track::after {
   content: '';
   position: absolute;
@@ -568,7 +554,7 @@ main {
   transition: background 0.2s, transform 0.15s;
   box-shadow: 3px 3px 0 var(--red-dark);
 }
-.btn-red:hover { background: var(--red-hover); transform: translateY(-2px); box-shadow: 4px 5px 0 var(--red-dark); }
+.btn-red:hover  { background: var(--red-hover); transform: translateY(-2px); box-shadow: 4px 5px 0 var(--red-dark); }
 .btn-red:active { transform: translateY(0); box-shadow: 1px 1px 0 var(--red-dark); }
 
 .btn-outline {
@@ -624,7 +610,7 @@ main {
   margin-bottom: 1.6rem;
 }
 
-/* ═══════════ FOOTER BOTTOM ONLY ═══════════ */
+/* ═══════════ FOOTER ═══════════ */
 footer {
   background: var(--paper-dark);
   border-top: 2px solid var(--paper-stain);
@@ -674,19 +660,14 @@ footer {
     padding: 2rem 1.4rem 1.6rem;
     gap: 1.6rem;
   }
-
   .ring-wrap { width: 155px; height: 155px; }
   .ring-svg  { width: 155px; height: 155px; }
   .ring-pct  { font-size: 2.1rem; }
-
   .score-details { min-width: unset; width: 100%; }
-  .score-big     { font-size: 3.2rem; }
-
+  .score-big { font-size: 3.2rem; }
   .stats-row { grid-template-columns: repeat(3,1fr); }
   .stat-count { font-size: 2.2rem; }
-
   .breakdown-panel { padding: 1.4rem 1.2rem; }
-
   .evidence-bar { font-size: 9px; letter-spacing: 3px; }
   .actions-panel { flex-direction: column; align-items: center; }
   .btn-red, .btn-outline { width: 100%; max-width: 320px; justify-content: center; }
@@ -701,10 +682,9 @@ footer {
 </head>
 <body>
 
-<!-- ═══════════ WATERMARK ═══════════ -->
 <div class="page-watermark" aria-hidden="true">RESULT</div>
 
-<!-- ═══════════ NAV — BRAND ONLY ═══════════ -->
+<!-- NAV -->
 <nav aria-label="Site navigation">
   <a href="/learn/" class="nav-logo" aria-label="SkillSphere Edu Home">
     <img src="/learn/assets/logotp.png" alt="SkillSphere Edu Logo" class="logo-icon">
@@ -715,10 +695,10 @@ footer {
   </a>
 </nav>
 
-<!-- ═══════════ MAIN ═══════════ -->
+<!-- MAIN -->
 <main id="main-content" role="main">
 
-  <!-- STATE: ERROR (no data) -->
+  <!-- ERROR STATE -->
   <div class="error-state reveal reveal-1" id="error-state" style="display:none" aria-live="polite" aria-label="No quiz data found">
     <div class="error-stamp" aria-hidden="true">!</div>
     <div class="error-title">No Data Found</div>
@@ -731,17 +711,15 @@ footer {
     </a>
   </div>
 
-  <!-- STATE: RESULTS -->
-  <div id="result-state" style="display:none;width:100%;display:none;flex-direction:column;align-items:center">
+  <!-- RESULT STATE -->
+  <div id="result-state" style="display:none;width:100%;flex-direction:column;align-items:center">
 
-    <!-- PAGE HEADER -->
     <div class="page-header reveal reveal-1">
       <span class="case-label" id="quiz-case-label">Case File · Quiz Result</span>
       <h1 class="page-title">Your <em>Verdict</em></h1>
       <div class="page-rule" aria-hidden="true"></div>
     </div>
 
-    <!-- REPORT WRAPPER -->
     <div class="report-wrap">
 
       <!-- EVIDENCE BAR -->
@@ -754,10 +732,7 @@ footer {
       <!-- VERDICT PANEL -->
       <div class="verdict-panel reveal reveal-3" role="region" aria-label="Score summary">
 
-        <!-- SCORE ZONE -->
         <div class="score-zone">
-
-          <!-- Radial ring -->
           <div class="ring-wrap" role="img" aria-label="Score percentage ring">
             <svg class="ring-svg" viewBox="0 0 180 180" aria-hidden="true">
               <circle class="ring-track" cx="90" cy="90" r="75"/>
@@ -769,34 +744,27 @@ footer {
             </div>
           </div>
 
-          <!-- Text details -->
           <div class="score-details">
             <span class="score-tag">Total Score</span>
             <div class="score-big" id="score-big" aria-label="Score value">—</div>
             <div class="score-sub" id="score-sub">Calculating your performance...</div>
-
-            <!-- Stamp -->
             <span class="verdict-stamp vs-fail" id="verdict-stamp" role="status" aria-live="polite">—</span>
           </div>
         </div>
 
-        <!-- STATS ROW -->
         <div class="stats-row" role="list" aria-label="Answer breakdown">
-
           <div class="stat-cell sc-correct" role="listitem">
             <span class="stat-icon" aria-hidden="true">✅</span>
             <span class="stat-count" id="stat-correct" aria-label="Correct answers">0</span>
             <span class="stat-lbl">Correct</span>
             <span class="stat-of" id="stat-correct-of"></span>
           </div>
-
           <div class="stat-cell sc-wrong" role="listitem">
             <span class="stat-icon" aria-hidden="true">❌</span>
             <span class="stat-count" id="stat-wrong" aria-label="Wrong answers">0</span>
             <span class="stat-lbl">Wrong</span>
             <span class="stat-of" id="stat-wrong-of"></span>
           </div>
-
           <div class="stat-cell sc-skip" role="listitem">
             <span class="stat-icon" aria-hidden="true">⚪</span>
             <span class="stat-count" id="stat-skip" aria-label="Unattempted questions">0</span>
@@ -834,11 +802,12 @@ footer {
           <span class="bar-pct" id="bar-skip-pct">0%</span>
         </div>
       </div>
-    </div><!-- /report-wrap -->
+
+    </div>
 
     <!-- ACTION BUTTONS -->
     <div class="actions-panel reveal reveal-5" role="navigation" aria-label="Post-result actions">
-      <button class="btn-red" id="btn-retry" aria-label="Retake quiz">
+      <button class="btn-red" id="btn-retry" aria-label="Retake quiz — returns to login">
         ↺ &nbsp;Retake Quiz
       </button>
       <button class="btn-outline" onclick="window.location.href='/learn/courses'" aria-label="Browse all courses">
@@ -849,11 +818,10 @@ footer {
       </button>
     </div>
 
-  </div><!-- /result-state -->
-
+  </div>
 </main>
 
-<!-- ═══════════ FOOTER BOTTOM ONLY ═══════════ -->
+<!-- FOOTER -->
 <footer role="contentinfo">
   <div class="footer-bottom">
     <span class="tagline">© 2026 SkillSphere Edu. All rights reserved.</span>
@@ -862,8 +830,7 @@ footer {
   </div>
 </footer>
 
-
-<!-- ═══════════ SCRIPT ═══════════ -->
+<!-- SCRIPT -->
 <script>
 (function () {
   'use strict';
@@ -877,11 +844,12 @@ footer {
   }
 
   /* ─── Helpers ─── */
-  function show(el)  { el.style.display = 'flex'; }
+  function show(el) { el.style.display = 'flex'; }
+
   function animCount(el, target, duration, suffix) {
     const start = performance.now();
     (function tick(now) {
-      const p = Math.min((now - start) / duration, 1);
+      const p     = Math.min((now - start) / duration, 1);
       const eased = 1 - Math.pow(1 - p, 3);
       el.textContent = Math.round(eased * target) + (suffix || '');
       if (p < 1) requestAnimationFrame(tick);
@@ -897,28 +865,27 @@ footer {
   /* ─── Compute counts ─── */
   let correct = 0, wrong = 0, skipped = 0;
   data.answers.forEach(function (a) {
-    if (!a)                        skipped++;
+    if (!a)                            skipped++;
     else if (a.selected === a.correct) correct++;
-    else                           wrong++;
+    else                               wrong++;
   });
 
-  const total   = data.answers.length;
-  const pct     = typeof data.percentage === 'number'
-                  ? data.percentage
-                  : total > 0 ? (correct / total) * 100 : 0;
-  const score   = typeof data.score !== 'undefined' ? data.score : correct;
+  const total = data.answers.length;
+  const pct   = typeof data.percentage === 'number'
+                ? data.percentage
+                : total > 0 ? (correct / total) * 100 : 0;
+  const score = typeof data.score !== 'undefined' ? data.score : correct;
 
-  /* ─── Verdict classification ─── */
-  const PASS_THRESHOLD   = 40;   // adjust to match your quiz logic
-  const HIGH_THRESHOLD   = 75;
+  /* ─── Verdict ─── */
+  const PASS_THRESHOLD = 40;
+  const HIGH_THRESHOLD = 75;
 
   const isPass = pct >= PASS_THRESHOLD;
   const isHigh = pct >= HIGH_THRESHOLD;
 
   const verdictText = isHigh ? 'Distinction' : isPass ? 'Passed' : 'Needs Work';
   const verdictCls  = isHigh ? 'vs-high'     : isPass ? 'vs-pass' : 'vs-fail';
-
-  const ringClass   = isHigh ? 'high' : isPass ? 'pass' : '';
+  const ringClass   = isHigh ? 'high'         : isPass ? 'pass'    : '';
 
   const subMsg = isHigh
     ? 'Outstanding performance. You have demonstrated strong command of this subject.'
@@ -933,28 +900,21 @@ footer {
               + now.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', hour12:true });
 
   /* ─── Populate DOM ─── */
-
-  // Evidence bar
   document.getElementById('ev-quiz-name').textContent =
     (data.quizName || 'SkillSphere Edu') + ' — Quiz Result';
-  document.getElementById('ev-timestamp').textContent = ts;
+  document.getElementById('ev-timestamp').textContent  = ts;
+  document.getElementById('score-big').textContent     = score;
+  document.getElementById('score-sub').textContent     = subMsg;
 
-  // Score big
-  document.getElementById('score-big').textContent = score;
-  document.getElementById('score-sub').textContent  = subMsg;
-
-  // Verdict stamp
   const stamp = document.getElementById('verdict-stamp');
   stamp.textContent = verdictText;
   stamp.className   = 'verdict-stamp ' + verdictCls;
   stamp.setAttribute('aria-label', 'Verdict: ' + verdictText);
 
-  // Stat-of labels
   document.getElementById('stat-correct-of').textContent = 'of ' + total;
   document.getElementById('stat-wrong-of').textContent   = 'of ' + total;
   document.getElementById('stat-skip-of').textContent    = 'of ' + total;
 
-  // Ring colour
   const ringFill = document.getElementById('ring-fill');
   const ringPct  = document.getElementById('ring-pct');
   if (ringClass) {
@@ -962,42 +922,32 @@ footer {
     ringPct.classList.add(ringClass);
   }
 
-  // Bar % values
   const cPct = total > 0 ? Math.round((correct / total) * 100) : 0;
   const wPct = total > 0 ? Math.round((wrong   / total) * 100) : 0;
   const sPct = total > 0 ? Math.round((skipped / total) * 100) : 0;
 
-  /* ─── Show result state ─── */
+  /* ─── Show result ─── */
   show(document.getElementById('result-state'));
 
-  /* ─── Animate after paint ─── */
+  /* ─── Animate ─── */
   requestAnimationFrame(function () {
     setTimeout(function () {
 
-      // Ring progress (circumference 471)
-      const dashOffset = 471 - (471 * Math.min(pct, 100) / 100);
-      ringFill.style.strokeDashoffset = dashOffset;
+      ringFill.style.strokeDashoffset = 471 - (471 * Math.min(pct, 100) / 100);
+      animCount(ringPct,                              Math.round(pct), 1600, '%');
+      animCount(document.getElementById('stat-correct'), correct,     1200, '');
+      animCount(document.getElementById('stat-wrong'),   wrong,       1200, '');
+      animCount(document.getElementById('stat-skip'),    skipped,     1200, '');
 
-      // Ring pct counter
-      animCount(ringPct, Math.round(pct), 1600, '%');
-
-      // Stat counters
-      animCount(document.getElementById('stat-correct'), correct, 1200, '');
-      animCount(document.getElementById('stat-wrong'),   wrong,   1200, '');
-      animCount(document.getElementById('stat-skip'),    skipped, 1200, '');
-
-      // Bar fills
       setTimeout(function () {
         document.getElementById('bar-correct').style.width = cPct + '%';
         document.getElementById('bar-wrong').style.width   = wPct + '%';
         document.getElementById('bar-skip').style.width    = sPct + '%';
 
-        // ARIA
         document.getElementById('bar-correct-track').setAttribute('aria-valuenow', cPct);
         document.getElementById('bar-wrong-track').setAttribute('aria-valuenow',   wPct);
         document.getElementById('bar-skip-track').setAttribute('aria-valuenow',    sPct);
 
-        // Bar labels
         document.getElementById('bar-correct-pct').textContent = cPct + '%';
         document.getElementById('bar-wrong-pct').textContent   = wPct + '%';
         document.getElementById('bar-skip-pct').textContent    = sPct + '%';
@@ -1006,10 +956,12 @@ footer {
     }, 150);
   });
 
-  /* ─── Retry button ─── */
+  /* ─── Retake button — clear session, return to login ─── */
   document.getElementById('btn-retry').addEventListener('click', function () {
-    const retryUrl = data.retryUrl || document.referrer || '/learn/courses';
-    window.location.href = retryUrl;
+    /* Wipe the exam session so the login page requires fresh credentials */
+    localStorage.removeItem('sse_token');
+    localStorage.removeItem('result');
+    window.location.href = 'index.html';
   });
 
   /* ─── Share button ─── */
@@ -1027,13 +979,13 @@ footer {
         .catch(function () {});
     } else if (navigator.clipboard) {
       navigator.clipboard.writeText(text).then(function () {
-        var btn = document.getElementById('btn-share');
+        var btn  = document.getElementById('btn-share');
         var orig = btn.innerHTML;
-        btn.innerHTML = '✓ &nbsp;Copied!';
+        btn.innerHTML         = '✓ &nbsp;Copied!';
         btn.style.borderColor = 'var(--stamp-green)';
         btn.style.color       = 'var(--stamp-green)';
         setTimeout(function () {
-          btn.innerHTML   = orig;
+          btn.innerHTML         = orig;
           btn.style.borderColor = '';
           btn.style.color       = '';
         }, 2200);
